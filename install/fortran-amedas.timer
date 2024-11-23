@@ -1,0 +1,16 @@
+[Unit]
+Description=fortran-amedas
+
+[Timer]
+OnBootSec=0s
+#OnUnitActiveSec=30min
+#OnCalendar=hourly
+#OnCalendar=daily
+OnCalendar=*-*-* 0:30:00
+# N.B. 5mis past midnight is too early for homepage renewal of JMA
+
+[Install]
+WantedBy=multi-user.target
+
+# For specifiers
+#https://www.freedesktop.org/software/systemd/man/systemd.time.html#

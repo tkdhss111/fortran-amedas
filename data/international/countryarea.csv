@@ -1,0 +1,253 @@
+﻿CountryCode,CountryArea,RegionId
+DZA,Algeria,1
+AGO,Angola,1
+BEN,Benin,1
+BWA,Botswana,1
+BFA,Burkina Faso,1
+BDI,Burundi,1
+CPV,Cabo Verde,1
+CMR,Cameroon,1
+CAF,Central African Republic,1
+TCD,Chad,1
+COM,Comoros,1
+COG,Congo,1
+COD,"Congo, Democratic Republic of the",1
+CIV,Côte d'Ivoire,1
+DJI,Djibouti,1
+EGY,Egypt,1
+GNQ,Equatorial Guinea,1
+ERI,Eritrea,1
+SWZ,Eswatini,1
+ETH,Ethiopia,1
+FRA,France,1
+GAB,Gabon,1
+GMB,Gambia,1
+GHA,Ghana,1
+GIN,Guinea,1
+GNB,Guinea-Bissau,1
+KEN,Kenya,1
+LSO,Lesotho,1
+LBR,Liberia,1
+LBY,Libya,1
+MDG,Madagascar,1
+MWI,Malawi,1
+MLI,Mali,1
+MRT,Mauritania,1
+MUS,Mauritius,1
+MAR,Morocco,1
+MOZ,Mozambique,1
+NAM,Namibia,1
+NER,Niger,1
+NGA,Nigeria,1
+NOR,Norway,1
+PRT,Portugal,1
+RWA,Rwanda,1
+SHN,Saint Helena,1
+STP,Sao Tome and Principe,1
+SEN,Senegal,1
+SYC,Seychelles,1
+SLE,Sierra Leone,1
+SOM,Somalia,1
+ZAF,South Africa,1
+SSD,South Sudan,1
+ESP,Spain,1
+SDN,Sudan,1
+TZA,"Tanzania, United Republic of",1
+TGO,Togo,1
+TUN,Tunisia,1
+UGA,Uganda,1
+GBR,United Kingdom (the),1
+ZMB,Zambia,1
+ZWE,Zimbabwe,1
+AFG,Afghanistan,2
+BHR,Bahrain,2
+BGD,Bangladesh,2
+BTN,Bhutan,2
+KHM,Cambodia,2
+CHN,China,2
+HKG,"Hong Kong, China",2
+IND,India,2
+IRN,"Iran, Islamic Republic of",2
+IRQ,Iraq,2
+JPN,Japan,2
+KAZ,Kazakhstan,2
+PRK,"Korea, Democratic People's Republic of",2
+KOR,"Korea, Republic of",2
+KWT,Kuwait,2
+KGZ,Kyrgyzstan,2
+LAO,Lao People's Democratic Republic,2
+MAC,"Macao, China",2
+MDV,Maldives,2
+MNG,Mongolia,2
+MMR,Myanmar,2
+NPL,Nepal,2
+OMN,Oman,2
+PAK,Pakistan,2
+QAT,Qatar,2
+RUS,Russian Federation,2
+SAU,Saudi Arabia,2
+LKA,Sri Lanka,2
+TJK,Tajikistan,2
+THA,Thailand,2
+TKM,Turkmenistan,2
+ARE,United Arab Emirates (the),2
+UZB,Uzbekistan,2
+VNM,Viet Nam,2
+YEM,Yemen,2
+ARG,Argentina,3
+BOL,"Bolivia, Plurinational State of",3
+BRA,Brazil,3
+CHL,Chile,3
+COL,Colombia,3
+ECU,Ecuador,3
+FLK,Falkland Islands (Malvinas),3
+FRA,France,3
+GUY,Guyana,3
+PRY,Paraguay,3
+PER,Peru,3
+SUR,Suriname,3
+GBR,United Kingdom (the),3
+URY,Uruguay,3
+VEN,"Venezuela, Bolivarian Republic of",3
+AIA,Anguilla,4
+ATG,Antigua and Barbuda,4
+BHS,Bahamas,4
+BRB,Barbados,4
+BLZ,Belize,4
+VGB,British Virgin Islands,4
+CAN,Canada,4
+CYM,Cayman Islands,4
+COL,Colombia,4
+CRI,Costa Rica,4
+CUB,Cuba,4
+CUW,Curacao,4
+DMA,Dominica,4
+DOM,Dominican Republic,4
+SLV,El Salvador,4
+FRA,France,4
+GRD,Grenada,4
+GTM,Guatemala,4
+HTI,Haiti,4
+HND,Honduras,4
+JAM,Jamaica,4
+MEX,Mexico,4
+MSR,Montserrat,4
+NLD,Netherlands,4
+NIC,Nicaragua,4
+PAN,Panama,4
+PRI,Puerto Rico,4
+KNA,Saint Kitts and Nevis,4
+LCA,Saint Lucia,4
+SPM,Saint Pierre and Miquelon,4
+VCT,Saint Vincent and Grenadines,4
+SXM,Sint Maarten,4
+TTO,Trinidad and Tobago,4
+TCA,Turks and Caicos Islands ,4
+GBR,United Kingdom (the),4
+USA,United States (the),4
+AUS,Australia,5
+BRN,Brunei Darussalam,5
+CXR,Christmas Island,5
+CCK,Cocos (Keeling) Islands,5
+COK,Cook Islands,5
+FJI,Fiji,5
+FRA,France,5
+PYF,French Polynesia,5
+IDN,Indonesia,5
+KIR,Kiribati,5
+MYS,Malaysia,5
+MHL,Marshall Islands,5
+FSM,"Micronesia, Federated States of",5
+NRU,Nauru,5
+NCL,New Caledonia,5
+NZL,New Zealand,5
+NIU,Niue,5
+PLW,Palau,5
+PNG,Papua New Guinea,5
+PHL,Philippines,5
+PCN,Pitcairn,5
+WSM,Samoa,5
+SGP,Singapore,5
+SLB,Solomon Islands,5
+TLS,Timor-Leste,5
+TKL,Tokelau,5
+TON,Tonga,5
+TUV,Tuvalu,5
+USA,United States (the),5
+VUT,Vanuatu,5
+ALB,Albania,6
+AND,Andorra,6
+ARM,Armenia,6
+AUT,Austria,6
+AZE,Azerbaijan,6
+BLR,Belarus,6
+BEL,Belgium,6
+BIH,Bosnia and Herzegovina,6
+BGR,Bulgaria,6
+HRV,Croatia,6
+CYP,Cyprus,6
+CZE,Czech Republic,6
+DNK,Denmark,6
+EST,Estonia,6
+FIN,Finland,6
+FRA,France,6
+GEO,Georgia,6
+DEU,Germany,6
+GIB,Gibraltar,6
+GRC,Greece,6
+GRL,Greenland,6
+HUN,Hungary,6
+ISL,Iceland,6
+IRL,Ireland,6
+ISR,Israel,6
+ITA,Italy,6
+JOR,Jordan,6
+KAZ,Kazakhstan,6
+LVA,Latvia,6
+LBN,Lebanon,6
+LTU,Lithuania,6
+LUX,Luxembourg,6
+MLT,Malta,6
+MDA,"Moldova, Republic of",6
+MNE,Montenegro,6
+NLD,Netherlands,6
+MKD,"North Macedonia, Republic of",6
+NOR,Norway,6
+PSE,"Palestine, State of",6
+POL,Poland,6
+PRT,Portugal,6
+ROU,Romania,6
+RUS,Russian Federation,6
+SRB,Serbia,6
+SVK,Slovakia,6
+SVN,Slovenia,6
+ESP,Spain,6
+SWE,Sweden,6
+CHE,Switzerland,6
+SYR,Syrian Arab Republic,6
+TUR,Türkiye,6
+UKR,Ukraine,6
+GBR,United Kingdom (the),6
+ARG,Argentina,7
+AUS,Australia,7
+BEL,Belgium,7
+BRA,Brazil,7
+CHL,Chile,7
+CHN,China,7
+FIN,Finland,7
+FRA,France,7
+DEU,Germany,7
+IND,India,7
+ITA,Italy,7
+JPN,Japan,7
+KOR,"Korea, Republic of",7
+NLD,Netherlands,7
+NZL,New Zealand,7
+NOR,Norway,7
+POL,Poland,7
+RUS,Russian Federation,7
+ZAF,South Africa,7
+ESP,Spain,7
+UKR,Ukraine,7
+GBR,United Kingdom (the),7
+USA,United States (the),7

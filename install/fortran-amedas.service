@@ -1,0 +1,19 @@
+[Unit]
+Description=fortran-amedas
+
+[Service]
+User=hss
+WorkingDirectory=/mnt/DATA/amedas
+
+# For intel compiler
+Environment = "MKL_ENABLE_INSTRUCTIONS=SSE4_2"
+ExecStart=/bin/bash -c "source /opt/intel/oneapi/setvars.sh && /usr/local/bin/fortran-amedas --wd '/mnt/DATA/amedas'"
+
+# For gfortran compiler
+#ExecStart=/usr/local/bin/fortran-amedas --wd '/mnt/DATA/amedas'
+
+[Install]
+WantedBy=multi-user.target
+
+# For specifiers
+# https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Specifiers

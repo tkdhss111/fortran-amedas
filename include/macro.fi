@@ -1,0 +1,9 @@
+#define __LOG__(X)     call logger%write ( __FILE__, __LINE__, 'Log: ',         X )
+#define __FATAL__(X)   call logger%write ( __FILE__, __LINE__, '*** Fatal: ',   X )
+#define __ERROR__(X)   call logger%write ( __FILE__, __LINE__, '*** Error: ',   X )
+#define __WARNING__(X) call logger%write ( __FILE__, __LINE__, '*** Warning: ', X )
+#define __DEBUG__(X)   call logger%write ( __FILE__, __LINE__, '*** Debug: ',   X )
+#define __INFO__(X)    call logger%write ( __FILE__, __LINE__, '*** Info: ',    X )
+#define __EXEC__(X)    call logger%exec  ( __FILE__, __LINE__, X )
+#define NA -999.0
+#define iNA -999
