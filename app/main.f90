@@ -94,8 +94,8 @@ program main
 
     __LOG__( repeat( '=', 50 ) )
 
-    file_site       = trim(dir)//'/amedas_'//trim(sites(i_s)%name)//'.bin'
-    file_site_1h    = trim(dir)//'/amedas_'//trim(sites(i_s)%name)//'_1h.bin'
+    file_site       = trim(dir)//'/bin/amedas_'//trim(sites(i_s)%name)//'.bin'
+    file_site_1h    = trim(dir)//'/bin/amedas_'//trim(sites(i_s)%name)//'_1h.bin'
     csvfile_site    = trim(dir)//'/csv/amedas_'//trim(sites(i_s)%name)//'.csv'
     csvfile_site_1h = trim(dir)//'/csv/amedas_'//trim(sites(i_s)%name)//'_1h.csv'
 
