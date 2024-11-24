@@ -1,6 +1,6 @@
 #include "macro.fi"
 
-module make_weather_db_mo
+module amedas_mo
 
   use file_mo
   use dt_mo
@@ -17,7 +17,8 @@ module make_weather_db_mo
   public :: amedas_ty, download_amedas, impute_amedas, print_amedas, write_csv_amedas 
   public :: make_mean_weather
   public :: extract_1h_sharp
-  public :: init_amedas_site, read_amedas_site, write_amedas_site
+  public :: make_amedas_site
+  public :: para_range_cyclic
 
   type site_ty
     integer         :: IndexNbr  = iNA ! International weather station number
@@ -62,97 +63,31 @@ module make_weather_db_mo
 
 contains
 
-  subroutine init_amedas_site ( file )
+  function make_amedas_site ( t_fr, t_to ) result ( amedas_site )
 
-    character(*), intent(in)     :: file
-    type(dt_ty)                  :: t_fr, t_to
-    type(dt_ty), allocatable     :: ts(:)
+    type(dt_ty), intent(in)      :: t_fr, t_to
+    type(dt_ty),     allocatable :: t1, t0_sharp, t10mins(:)
     type(amedas_ty), allocatable :: amedas_site(:)
-    integer u, n
+    integer n
 
-    __LOG__( 'S: init_amedas_site: '//trim(file) )
+    __LOG__( 'S: make_amedas_site' )
 
-    !block
-    !logical exist
-    !inquire( file = file, exist = exist )
-    !if ( exist ) then
-    !  __LOG__( 'AMeDas file exists ... skipped binary file initialization.' )
-    !  return
-    !end if
-    !end block
+    ! Begin with yyyy-mm-dd 00:10:00
+    t1 = t_fr%plus ( mins = 10 )
 
-    t_fr = strptime ( '2008-06-25', '%Y-%m-%d' )
-    t_to = strptime ( '2030-12-31', '%Y-%m-%d' )
-    ts = seq_dt ( t_fr, t_to, '10 mins' )
-    n = size(ts)
+    ! End with yyyy-mm-dd 00:00:00 (Today but as yesterday data in HE)
+    t0_sharp = t_to%plus ( days = 1 )
+
+    t10mins = seq_dt ( t1, t0_sharp, '10 mins' )
+    n = size(t10mins)
 
     allocate ( amedas_site(n) )
 
-    amedas_site%HE = ts
+    amedas_site%HE = t10mins
 
-    open ( newunit = u, file = file, form = 'unformatted', iostat = iostat, iomsg = iomsg )
+    __LOG__( 'E: make_amedas_site' )
 
-    if ( iostat /= 0 ) then
-      __ERROR__( iomsg )
-      stop 1
-    end if
-
-    write ( u ) n
-    write ( u ) amedas_site
-    close ( u )
-
-    __LOG__( 'E: init_amedas_site: '//trim(file) )
-
-  end subroutine
-
-  function read_amedas_site ( file ) result ( amedas_site )
-
-    character(*), intent(in)     :: file
-    type(amedas_ty), allocatable :: amedas_site(:)
-    integer u, n
-
-    __LOG__( 'S: read_amedas_site: '//trim(file) )
-
-    open ( newunit = u, file = file, form = 'unformatted', iostat = iostat, iomsg = iomsg )
-
-    if ( iostat /= 0 ) then
-      __ERROR__( iomsg )
-      stop 1
-    end if
-
-    read ( u ) n
-    allocate ( amedas_site(n) )
-    read ( u ) amedas_site
-    close ( u )
-
-    __LOG__( 'E: read_amedas_site: '//trim(file) )
-
-  end function 
-
-  subroutine write_amedas_site ( amedas_site, file )
-
-    type(amedas_ty), intent(in) :: amedas_site(:)
-    character(*),    intent(in) :: file
-    integer u, n
-
-    __LOG__( 'S: write_amedas_site: '//trim(file) )
-
-    n = size(amedas_site)
-
-    open ( newunit = u, file = file, form = 'unformatted', iostat = iostat, iomsg = iomsg )
-
-    if ( iostat /= 0 ) then
-      __ERROR__( iomsg )
-      stop 1
-    end if
-
-    write ( u ) n
-    write ( u ) amedas_site
-    close ( u )
-
-    __LOG__( 'E: write_amedas_site: '//trim(file) )
-
-  end subroutine
+  end function
 
   function read_sites ( csvfile ) result ( sites )
 
@@ -247,8 +182,8 @@ contains
       print '(a, f7.2$)', ' ws:',     amedas(i)%ws
       print '(a, f7.1$)', ' ws1h:',   amedas(i)%ws1h
       print '(a, f7.2$)', ' ws_max:', amedas(i)%ws_max
-      !print '(a,    a$)', ' wd:',     trim(amedas(i)%wd)
-      !print '(a,    a$)', ' wd_max:', trim(amedas(i)%wd_max)
+      print '(a,    a$)', ' wd:',     trim(amedas(i)%wd)
+      print '(a,    a$)', ' wd_max:', trim(amedas(i)%wd_max)
       print '(a, f7.2$)', ' rm:',     amedas(i)%rm
       print '(a, f7.2$)', ' rm1h:',   amedas(i)%rm1h
       print '(a, f7.1$)', ' tp:',     amedas(i)%tp
@@ -273,20 +208,27 @@ contains
 
     call logger%open ( __FILE__, __LINE__, newunit = u, file = file, status = 'replace' )
 
-    write( u, '(a)' ) 'HS,HE,hpa,hpa0,pr,hm,ws,ws_max,rm,tp,wd,wd_max,missing'
+    write( u, '(a)' ) 'HS,HE,hpa,hpa0,pr,hm,hm1h,ws,ws1h,ws_max,rm,rm1h,tp,tp1h,tp5h,tp3d,tp7d,wd,wd_max,missing'
 
     do i = 1, size(amedas)
-      write( u, '( 2(a19, ","), 8(f7.2, ","), 2(a, ","), a20)' ) &
+      write( u, '( 2(a19, ","), 15(f7.2, ","), 2(a, ","), a20)' ) &
       amedas(i)%HS%datetime,  & ! hour start time stamp
       amedas(i)%HE%datetime,  & ! hour   end time stamp
       amedas(i)%hpa,          &
       amedas(i)%hpa0,         &
       amedas(i)%pr,           &
       amedas(i)%hm,           &
+      amedas(i)%hm1h,         &
       amedas(i)%ws,           &
+      amedas(i)%ws1h,         &
       amedas(i)%ws_max,       &
       amedas(i)%rm,           &
+      amedas(i)%rm1h,         &
       amedas(i)%tp,           &
+      amedas(i)%tp1h,         &
+      amedas(i)%tp5h,         &
+      amedas(i)%tp3d,         &
+      amedas(i)%tp7d,         &
       trim(amedas(i)%wd),     &
       trim(amedas(i)%wd_max), &
       trim(adjustl(amedas(i)%missing))
@@ -401,14 +343,14 @@ contains
 
   end function
 
-  subroutine download_amedas ( outfile, dir, dur, prec_no, IndexNbr, year, month, day, istat )
+  subroutine download_amedas ( outfile, dir, dur, prec_no, IndexNbr, year, month, day, removed )
 
     use ifport
 
     character(*),   intent(in)  :: dir, dur
     integer,        intent(in)  :: prec_no, IndexNbr, year, month, day
     character(255), intent(out) :: outfile 
-    integer,        intent(out) :: istat
+    logical,        intent(out) :: removed
     character(1000)             :: url
     character(255) :: outdir
     logical exist
@@ -419,7 +361,9 @@ contains
 
 ! Example mito: latest is yesterday
 ! https://www.data.jma.go.jp/obd/stats/etrn/view/10min_s1.php?prec_no=40&block_no=47629&year=2023&month=1&day=17&view=
-    istat = 0
+
+    removed = .false.
+
     url = 'https://www.data.jma.go.jp/obd/stats/etrn/view/'//trim(dur)//'_s1.php'
     write( url, '(a,   i2)' ) trim(url)//'?prec_no=',  prec_no
     write( url, '(a,   i5)' ) trim(url)//'&block_no=', IndexNbr
@@ -457,7 +401,7 @@ contains
       print *, 'file: ', trim(dir)//'/html/'//trim(outfile)
       __EXEC__( 'cat "'//trim(dir)//'/html/'//trim(outfile)//'"' )
       __EXEC__( 'rm "'//trim(dir)//'/html/'//trim(outfile)//'"' )
-      istat = 1
+      removed = .true.
       return
     end if
 
@@ -544,5 +488,31 @@ contains
     amedas1h = amedas(ii_1h)
 
   end function
+
+  subroutine para_range_cyclic ( n, nimages, i_image, i_fr, i_to )
+
+    integer, intent(in)  :: n
+    integer, intent(in)  :: nimages
+    integer, intent(in)  :: i_image
+    integer, intent(out) :: i_fr
+    integer, intent(out) :: i_to
+    integer i_work1, i_work2
+
+    if ( n < nimages ) then
+      __FATAL__( paste( 'n < num_images. Reduce the number of num_images!, n:', &
+                        n, ', num_images:', nimages ) )
+      error stop 1
+    end if
+
+    i_work1 = n / nimages
+    i_work2 = mod( n, nimages )
+    i_fr = (i_image - 1) * i_work1 + 1 + min( i_image - 1, i_work2 )
+    i_to = i_fr + i_work1 - 1
+
+    if ( i_work2 > i_image - 1 ) i_to = i_to + 1
+      __INFO__( paste( 'Image', i_image, ' of ', nimages, &
+                       ', n:', n, ', Index: ', i_fr, ' ~', i_to ) )
+
+  end subroutine
 
 end module

@@ -6,17 +6,16 @@
 program main
 
   use cli_mo
-  use amedas_mo
+  use make_weather_db_mo
   use dt_mo
 
   implicit none
 
-  type(dt_ty)              :: t0, t1 ! Now and yesterday
-  type(dt_ty)              :: t_fr   ! Start date
-  type(dt_ty)              :: t_to   ! End date
-  type(dt_ty), allocatable :: ts(:)  ! Datetimes
-  type(tm_ty)              :: tm     ! Timer
-  integer                  :: nts    ! Number of datetimes
+  type(dt_ty)              :: HE     ! Now
+  type(dt_ty)              :: HE_fr  ! Start date
+  type(dt_ty)              :: HE_to  ! End date
+  type(dt_ty), allocatable :: HEs(:) ! Datetimes
+  integer                  :: nHEs   ! Number of datetimes
 
   ! Command arguments
   type(cli_ty)   :: cli     ! Command line interface
@@ -29,9 +28,9 @@ program main
   character(255) :: outfile
   type(amedas_ty), allocatable :: amedas(:), amedas_site(:), amedas_site_1h(:)
   type(site_ty),   allocatable :: sites(:)
+  character(255)               :: file_site, file_site_1h
   character(255)               :: csvfile_site, csvfile_site_1h
-  integer i_d, i_s, i_fr, i_to, nsites
-  logical removed
+  integer i_d, i_s, nsites, istat
 
   cli%title     = 'Server Program for AMeDas till Yesterday'
   cli%exe       = 'fortran-amedas'
@@ -58,17 +57,13 @@ program main
   cli%usage(i)  = '==================================================';i=i+1
   cli%n_usage   = i-1
 
-  if ( this_image() == 1 ) then
-    call tm%tic
-  end if
-
   ! Default values
-  t0 = t0%now()
-  t1 = t0%minus ( days = 1 )
+  HE = HE%now()
+  HE = HE%minus ( days = 1 )
 
  ! N.B. 10-min data are stored from 2008-06-25 and clean data starts from 2008-07-02; 7 days later.
   date_fr = '2008-06-25' ! Epoch date
-  date_to = t1%date       ! Yesterday is the latest
+  date_to = HE%date      ! Yesterday is the latest
 
   call cli%get_args ( dir, date_fr, date_to )
 
@@ -84,43 +79,45 @@ program main
     print *, repeat('=', 80)
   end if
 
-  t_fr = strptime ( date_fr, '%Y-%m-%d' )
-  t_to = strptime ( date_to, '%Y-%m-%d' )
-  ts   = seq_dt ( t_fr, t_to, '1 day' )
-  nts  = size(ts)
+  HE_fr = strptime ( date_fr, '%Y-%m-%d' )
+  HE_to = strptime ( date_to, '%Y-%m-%d' )
+  HEs   = seq_dt ( HE_fr, HE_to, '1 day' )
+  nHEs  = size(HEs)
 
   sites = read_sites ( csvfile = trim(dir)//'/kansho_tepco.csv' )
 
   nsites = size(sites)
 
-  call para_range_cyclic ( nsites, num_images(), this_image(), i_fr, i_to ) 
+  !loop_site_i_s : do i_s = 1, nsites
 
-  loop_site_i_s : do i_s = i_fr, i_to
+  i_s = this_image()
 
-    __LOG__( paste(  repeat( '=', 20 ), trim(sites(i_s)%name), repeat( '=', 20 ) ) )
+    __LOG__( repeat( '=', 50 ) )
 
+    file_site       = trim(dir)//'/bin/amedas_'//trim(sites(i_s)%name)//'.bin'
+    file_site_1h    = trim(dir)//'/bin/amedas_'//trim(sites(i_s)%name)//'_1h.bin'
     csvfile_site    = trim(dir)//'/csv/amedas_'//trim(sites(i_s)%name)//'.csv'
     csvfile_site_1h = trim(dir)//'/csv/amedas_'//trim(sites(i_s)%name)//'_1h.csv'
 
-    amedas_site = make_amedas_site ( t_fr, t_to ) ! N.B. 10-min records
+    call init_amedas_site ( file = trim(dir)//'/amedas_'//trim(sites(i_s)%name)//'.bin' )
 
-    loop_date: do i_d = 1, nts
+    amedas_site = read_amedas_site ( file = file_site )
+
+    do i_d = 1, nHEs
 
       call download_amedas ( outfile,   &
         dir      = dir,                 &
         dur      = '10min',             &
         prec_no  = sites(i_s)%prec_no,  &
         IndexNbr = sites(i_s)%IndexNbr, &
-        year     = ts(i_d)%yr,          &
-        month    = ts(i_d)%mo,          &
-        day      = ts(i_d)%dy,          &
-        removed  = removed )
+        year     = HEs(i_d)%yr,         &
+        month    = HEs(i_d)%mo,         &
+        day      = HEs(i_d)%dy,         &
+        istat    = istat )
 
-      ! In case of file removal, do not proceed.
-      if ( removed ) cycle
+      if ( istat /= 0 ) cycle
 
-      ! N.B. Hourly records (i.e., 1:00, 2:00, ..., 24:00 as HE)
-      amedas = extract_data ( ts(i_d), file = trim(dir)//'/html/'//trim(outfile) )
+      amedas = extract_data ( HEs(i_d), file = trim(dir)//'/html/'//trim(outfile) )
 
       if ( is_eq ( amedas(1)%tp, NA ) ) then
         __EXEC__( 'rm "'//trim(dir)//'/html/'//trim(outfile)//'"' )
@@ -131,25 +128,25 @@ program main
 
       amedas_site(6*24*(i_d-1) + 1 : 6*24*(i_d-1) + size(amedas)) = amedas 
 
-    end do loop_date
+    end do
 
     call impute_amedas ( amedas_site )
 
-    call make_mean_weather ( amedas_site )
+    !call make_mean_weather ( amedas_site )
 
     amedas_site_1h = extract_1h_sharp ( amedas_site )
+
+    call write_amedas_site ( amedas_site,    file = file_site    )
+    call write_amedas_site ( amedas_site_1h, file = file_site_1h )
+
+    amedas_site    = pack( amedas_site,    amedas_site%HE%date    < HE.date )
+    amedas_site_1h = pack( amedas_site_1h, amedas_site_1h%HE%date < HE.date )
 
     call write_csv_amedas ( amedas_site,    file = csvfile_site    )
     call write_csv_amedas ( amedas_site_1h, file = csvfile_site_1h )
 
-    call print_amedas ( amedas_site, date_fr = t1%date, date_to = t0%date )
+    call print_amedas ( amedas_site, date_fr = HE%date, date_to = HE%date )
 
-  end do loop_site_i_s
-
-  sync all
-
-  if ( this_image() == 1 ) then 
-    call tm%toc
-  end if
+  !end do loop_site_i_s
 
 end program

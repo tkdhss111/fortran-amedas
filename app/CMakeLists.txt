@@ -6,7 +6,7 @@ set ( SRCS
   ~/2_tools/fortran-logger/src/logger_mo.f90
   ./cli_mo.f90
   ./main.f90
-  ../src/make_weather_db_mo.f90
+  ../src/amedas_mo.f90
   )
 set ( MKLROOT /opt/intel/oneapi/mkl/latest )
 set ( LIBS

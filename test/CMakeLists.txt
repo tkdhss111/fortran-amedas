@@ -11,7 +11,7 @@ set ( SRCS
   ~/2_tools/fortran-datetime/src/dt_mo.f90
   ../app/cli_mo.f90
   ../app/main.f90
-  ../src/make_weather_db_mo.f90
+  ../src/amedas_mo.f90
   )
 set ( MKLROOT /opt/intel/oneapi/mkl/latest )
 set ( LIBS

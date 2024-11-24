@@ -8,6 +8,9 @@ run: clean release
 release:
 	make release $(MKFILE)
 
+debug:
+	make debug $(MKFILE)
+
 test:
 	make test $(MKFILE)
 
