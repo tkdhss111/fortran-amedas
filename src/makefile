@@ -9,5 +9,8 @@ debug:
 test:
 	make test $(MKFILE)
 
+run:
+	make run $(MKFILE)
+
 clean:
 	make clean $(MKFILE)

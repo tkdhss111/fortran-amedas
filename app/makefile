@@ -1,9 +1,8 @@
 BIN=fortran-amedas
 MKFILE:=-C .. -f makefile
 
-run: clean release
-	../build/app/$(BIN) \
-  --dir "/mnt/DATA/amedas"
+run:
+	make run $(MKFILE)
 
 release:
 	make release $(MKFILE)

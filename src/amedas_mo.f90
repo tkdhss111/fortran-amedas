@@ -211,6 +211,7 @@ contains
     write( u, '(a)' ) 'HS,HE,hpa,hpa0,pr,hm,hm1h,ws,ws1h,ws_max,rm,rm1h,tp,tp1h,tp5h,tp3d,tp7d,wd,wd_max,missing'
 
     do i = 1, size(amedas)
+      if ( is_eq ( amedas(i)%tp7d, NA ) ) cycle
       write( u, '( 2(a19, ","), 15(f7.2, ","), 2(a, ","), a20)' ) &
       amedas(i)%HS%datetime,  & ! hour start time stamp
       amedas(i)%HE%datetime,  & ! hour   end time stamp
@@ -484,7 +485,7 @@ contains
     integer i
 
     ii = [( i, i = 1, size(amedas) )] ! Use indexing to avoid segmentation error
-    ii_1h = pack( ii, amedas%HS%datetime(15:16) == '00' .and. .not. is_eq ( amedas%tp7d, NA ) )
+    ii_1h = pack( ii, amedas%HS%datetime(15:16) == '00' )
     amedas1h = amedas(ii_1h)
 
   end function
