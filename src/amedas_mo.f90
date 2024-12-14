@@ -14,7 +14,7 @@ module amedas_mo
   public :: logger, paste
   public :: dt_ty, strptime, seq_dt
   public :: site_ty, read_sites, extract_data
-  public :: amedas_ty, download_amedas, impute_amedas, print_amedas, write_csv_amedas 
+  public :: amedas_ty, download_amedas, impute_amedas, print_amedas, write_csv_amedas, csv2parquet
   public :: make_mean_weather
   public :: extract_1h_sharp
   public :: make_amedas_site
@@ -240,6 +240,25 @@ contains
     __LOG__( 'E: write_csv_amedas: '//trim(file) )
 
   end subroutine
+
+  subroutine csv2parquet ( csv, parquet )
+
+    character(*), intent(in)    :: csv, parquet
+    character(255)              :: query
+
+    __LOG__( 'S: csv2parquet' )
+
+    ! Do not include TIMESTAMP-related column types,
+    ! or duckdb automatically converts datetime to UTC datatime.
+    query = 'COPY (SELECT * FROM read_csv("'//trim(csv)//&
+      '", auto_type_candidates = ["BOOLEAN", "INTEGER", "FLOAT", "VARCHAR"])) TO "'//&
+      trim(parquet)//'" WITH(FORMAT PARQUET)'
+
+    __EXEC__( "duckdb :memory: '"//trim(query)//"'" )
+
+    __LOG__( 'E: csv2parquet' )
+
+  end subroutine csv2parquet
 
   function extract_data ( HE, file ) result ( amedas )
 

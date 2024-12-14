@@ -7,10 +7,10 @@ WorkingDirectory=/mnt/DATA/amedas
 
 # For intel compiler
 Environment = "MKL_ENABLE_INSTRUCTIONS=SSE4_2"
-ExecStart=/bin/bash -c "source /opt/intel/oneapi/setvars.sh && /usr/local/bin/fortran-amedas --wd '/mnt/DATA/amedas'"
+ExecStart=/bin/bash -c "source /opt/intel/oneapi/setvars.sh && /usr/local/bin/fortran-amedas --dir '/mnt/DATA/amedas'"
 
 # For gfortran compiler
-#ExecStart=/usr/local/bin/fortran-amedas --wd '/mnt/DATA/amedas'
+#ExecStart=/usr/local/bin/fortran-amedas --dir '/mnt/DATA/amedas'
 
 [Install]
 WantedBy=multi-user.target

@@ -30,6 +30,7 @@ program main
   type(amedas_ty), allocatable :: amedas(:), amedas_site(:), amedas_site_1h(:)
   type(site_ty),   allocatable :: sites(:)
   character(255)               :: csvfile_site, csvfile_site_1h
+  character(255)               :: parquet_site, parquet_site_1h
   integer i_d, i_s, i_fr, i_to, nsites
   logical removed
 
@@ -68,11 +69,11 @@ program main
 
  ! N.B. 10-min data are stored from 2008-06-25 and clean data starts from 2008-07-02; 7 days later.
   date_fr = '2008-06-25' ! Epoch date
-  date_to = t1%date       ! Yesterday is the latest
+  date_to = t1%date      ! Yesterday is the latest
 
   call cli%get_args ( dir, date_fr, date_to )
 
-  call logger%init ( file  = trim(dir)//'/amedas.log', &
+  call logger%init ( file  = trim(dir)//'/fortran-amedas.log', &
                      app   = trim(cli%exe), &
                      email = 'dsbiztiu@gmail.com' )
 
@@ -95,12 +96,17 @@ program main
 
   call para_range_cyclic ( nsites, num_images(), this_image(), i_fr, i_to ) 
 
+  __EXEC__( 'mkdir -p '//trim(dir)//'/csv' )
+  __EXEC__( 'mkdir -p '//trim(dir)//'/parquet' )
+
   loop_site_i_s : do i_s = i_fr, i_to
 
     __LOG__( paste(  repeat( '=', 20 ), trim(sites(i_s)%name), repeat( '=', 20 ) ) )
 
     csvfile_site    = trim(dir)//'/csv/amedas_'//trim(sites(i_s)%name)//'.csv'
     csvfile_site_1h = trim(dir)//'/csv/amedas_'//trim(sites(i_s)%name)//'_1h.csv'
+    parquet_site    = trim(dir)//'/parquet/amedas_'//trim(sites(i_s)%name)//'.parquet'
+    parquet_site_1h = trim(dir)//'/parquet/amedas_'//trim(sites(i_s)%name)//'_1h.parquet'
 
     amedas_site = make_amedas_site ( t_fr, t_to ) ! N.B. 10-min records
 
@@ -141,8 +147,11 @@ program main
 
     call write_csv_amedas ( amedas_site,    file = csvfile_site    )
     call write_csv_amedas ( amedas_site_1h, file = csvfile_site_1h )
+    call csv2parquet ( csvfile_site,    parquet_site    )
+    call csv2parquet ( csvfile_site_1h, parquet_site_1h )
 
-    call print_amedas ( amedas_site, date_fr = t1%date, date_to = t0%date )
+    !call print_amedas ( amedas_site, date_fr = t1%date, date_to = t0%date )
+    call print_amedas ( amedas_site, date_fr = "2016-12-31", date_to = "2017-01-01" )
 
   end do loop_site_i_s
 

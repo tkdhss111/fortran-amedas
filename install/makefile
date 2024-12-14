@@ -26,5 +26,8 @@ stop:
 	rm /etc/systemd/system/${APP}.service ; \
 	rm /etc/systemd/system/${APP}.timer
 
+log:
+	journalctl -u ${APP}.service
+
 watchdog:
 	journalctl -f -u ${APP}.service

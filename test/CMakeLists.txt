@@ -5,10 +5,10 @@ set ( ARGS
   #--date_to "2022-12-31"
   )
 set ( SRCS 
-  ~/1_projects/utils/file/src/file_mo.f90
-  ~/1_projects/utils/00_template_ifx/src/spline_mo.f90
-  ~/2_tools/fortran-logger/src/logger_mo.f90
-  ~/2_tools/fortran-datetime/src/dt_mo.f90
+  ${MYHOME}/1_projects/utils/file/src/file_mo.f90
+  ${MYHOME}/1_projects/utils/00_template_ifx/src/spline_mo.f90
+  ${MYHOME}/2_tools/fortran-logger/src/logger_mo.f90
+  ${MYHOME}/2_tools/fortran-datetime/src/dt_mo.f90
   ../app/cli_mo.f90
   ../app/main.f90
   ../src/amedas_mo.f90
@@ -26,7 +26,7 @@ set ( CMAKE_Fortran_FLAGS
 
 if ( CMAKE_BUILD_TYPE MATCHES "Debug" )
   set ( CMAKE_Fortran_FLAGS_DEBUG
-    "-coarray=shared -coarray-num-images=9 -g -O0 -warn all -check bounds -traceback -Ddebug ${CMAKE_Fortran_FLAGS}" )
+    "-coarray=shared -coarray-num-images=1 -g -O0 -warn all -check bounds -traceback -Ddebug ${CMAKE_Fortran_FLAGS}" )
 endif()
 
 add_executable ( ${EXE} ${SRCS} )
